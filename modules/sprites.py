@@ -5,7 +5,6 @@ import PIL.Image
 import PIL.ImageDraw
 
 from modules.files import make_string_safe_for_file_name
-from modules.pokemon import Pokemon, Species
 from modules.runtime import get_sprites_path
 
 
@@ -13,18 +12,8 @@ def choose_random_sprite() -> Path:
     """
     :return: Path to a random Pokémon sprite file
     """
-    rand = random.randint(0, 99)
-    match rand:
-        case _ if rand < 10:
-            icon_dir = get_sprites_path() / "pokemon" / "shiny"
-        case _ if rand < 99:
-            icon_dir = get_sprites_path() / "pokemon" / "normal"
-        case _:
-            icon_dir = get_sprites_path() / "pokemon" / "anti-shiny"
+    return Path.cwd() / "DQA.png"
 
-    files = [x for x in icon_dir.glob("*.png") if x.is_file()]
-
-    return random.choice(files)
 
 
 def crop_sprite_square(path: Path) -> PIL.Image:
@@ -93,34 +82,6 @@ def generate_placeholder_image(width: int, height: int) -> PIL.Image:
     return placeholder
 
 
-def _get_pokemon_sprite_path(pokemon_or_species: Pokemon | Species, sprite_directory: str) -> Path:
-    if isinstance(pokemon_or_species, Pokemon):
-        file_name = pokemon_or_species.species_name_for_stats
-    elif pokemon_or_species.name == "Unown":
-        # P for Pokebot!
-        file_name = "Unown (P)"
-    else:
-        file_name = pokemon_or_species.name
-
-    return get_sprites_path() / "pokemon" / sprite_directory / f"{make_string_safe_for_file_name(file_name)}.png"
 
 
-def get_regular_sprite(pokemon_or_species: Pokemon | Species) -> Path:
-    return _get_pokemon_sprite_path(pokemon_or_species, sprite_directory="normal")
 
-
-def get_shiny_sprite(pokemon_or_species: Pokemon | Species) -> Path:
-    return _get_pokemon_sprite_path(pokemon_or_species, sprite_directory="shiny")
-
-
-def get_anti_shiny_sprite(pokemon_or_species: Pokemon | Species) -> Path:
-    return _get_pokemon_sprite_path(pokemon_or_species, sprite_directory="anti-shiny")
-
-
-def get_sprite(pokemon: Pokemon) -> Path:
-    if pokemon.is_shiny:
-        return get_shiny_sprite(pokemon)
-    elif pokemon.is_anti_shiny:
-        return get_anti_shiny_sprite(pokemon)
-    else:
-        return get_regular_sprite(pokemon)

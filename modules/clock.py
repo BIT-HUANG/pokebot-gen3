@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from modules.context import context
-from modules.memory import read_symbol, unpack_uint16, get_save_block
+from modules.memory import unpack_uint16, get_save_block
 
 
 @dataclass
@@ -18,25 +18,6 @@ class ClockTime:
         return self.days * 24 * 60 + self.hours * 60 + self.minutes
 
 
-def get_clock_time() -> ClockTime:
-    """
-    Returns the in-game time that clock events are based on. This clock is based on
-    the GBA's/emulator's real-time clock, which in this bot is tied to the actual
-    system clock.
-
-    So regardless of the speed multiplier, this time will always advance in real time.
-
-    :return: The current clock time as reported by the game. Note that the game does
-             not update this value all the time, so it is normal for it to return the
-             same value when called multiple times within a couple of seconds.
-    """
-
-    # There is no RTC-based clock in FR/LG.
-    if context.rom.is_frlg:
-        return ClockTime(0, 0, 0, 0)
-
-    data = read_symbol("gLocalTime")
-    return ClockTime(unpack_uint16(data[0:2]), data[2], data[3], data[4])
 
 
 @dataclass

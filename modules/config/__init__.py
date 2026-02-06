@@ -6,19 +6,14 @@ from confz import BaseConfig, FileSource
 from ruamel.yaml import YAML
 
 from modules import exceptions
-from modules.config.schemas_v1 import Battle, CatchBlock, Cheats, Discord, OBS, Keys, Logging, HTTP, ProfileMetadata
+from modules.config.schemas_v1 import  Cheats, Keys, Logging, ProfileMetadata
 from modules.runtime import get_base_path
 
 # Defines which class attributes of the Config class are meant to hold required configuration data.
 CONFIG_ATTRS = {
-    "battle",
-    "catch_block",
     "cheats",
-    "discord",
-    "obs",
     "keys",
-    "logging",
-    "http",
+    "logging"
 }
 
 
@@ -32,18 +27,14 @@ class Config:
         :param is_profile: Whether profile files are expected in this directory.
         :param strict: Whether to allow files to be missing.
         """
-        self.battle: Battle = Battle()
+
         self.config_dir = Path(config_dir) if config_dir else get_base_path() / "profiles"
-        self.catch_block: CatchBlock = CatchBlock()
         self.cheats: Cheats = Cheats()
-        self.discord: Discord = Discord()
-        self.obs: OBS = OBS()
         self.is_profile = is_profile
         self.keys: Keys = Keys()
         self.loaded = False
         self.logging: Logging = Logging()
         self.metadata: ProfileMetadata | None = None
-        self.http: HTTP = HTTP()
         self.load(strict=strict)
 
     def load(self, config_dir: str | Path | None = None, strict: bool = True):

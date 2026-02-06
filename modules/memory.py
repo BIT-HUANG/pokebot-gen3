@@ -8,10 +8,8 @@ from modules.game import (
     get_event_flag_offset,
     get_event_var_offset,
     get_symbol,
-    get_symbol_name,
-    get_symbol_name_before,
 )
-from modules.state_cache import state_cache
+
 
 
 def unpack_sint8(value: bytes | int) -> int:
@@ -81,39 +79,6 @@ def write_symbol(name: str, data: bytes, offset: int = 0x0) -> bool:
     return True
 
 
-def get_callback_for_pointer_symbol(symbol: str, offset: int = 0, pretty_name: bool = True) -> str:
-    """
-    Reads the value of a symbol (which should be a 4-byte pointer) and returns the nearest symbol that
-    matches its value.
-
-    This can be used for callback pointers that point at some game function, such as the two main game
-    callbacks or some other callbacks inside of structs.
-
-    :param symbol: The symbol containing the pointer.
-    :param offset: (optional) Offset from the start of the symbol where the callback should appear.
-    :param pretty_name: Whether to return the symbol name all-uppercase (False) or
-                        with 'natural' case (True)
-    :return: The symbol name closest to the value.
-    """
-    pointer = unpack_uint32(read_symbol(symbol, offset, 4))
-
-    if pointer == 0:
-        return ""
-
-    # Do a quick sanity check whether the pointer value is even within the memory ranges that the game
-    # uses.
-    # While the ROM can extend past 0x0900_0000, in practice none of the symbols in our symbol tables
-    # are outside the 0x08... range so we limit the lookup to that.
-    if (
-        (0x0200_0000 <= pointer < 0x0204_0000)
-        or (0x0300_0000 <= pointer < 0x0300_8000)
-        or (0x0800_0000 <= pointer < 0x0900_0000)
-    ):
-        return get_symbol_name_before(pointer, pretty_name)
-    else:
-        raise RuntimeError(
-            f"The pointer value we tried to read from `{symbol}` was 0x{hex(pointer)} which is outside the allowed ranges."
-        )
 
 
 def get_save_block(num: int = 1, offset: int = 0, size: int = 0) -> bytes:
@@ -241,85 +206,6 @@ class GameState(IntEnum):
     UNKNOWN = auto()
     QUEST_LOG = auto()
 
-
-def get_game_state_symbol() -> str:
-    callback2 = read_symbol("gMain", 4, 4)  # gMain.callback2
-    addr = unpack_uint32(callback2) - 1
-    callback_name = get_symbol_name(addr)
-    state_cache.callback2 = callback_name
-    return callback_name
-
-
-def get_game_state() -> GameState:
-    if state_cache.game_state.age_in_frames == 0:
-        return state_cache.game_state.value
-
-    match get_game_state_symbol():
-        case (
-            "CB2_SETUPOVERWORLDFORQLPLAYBACKWITHWARPEXIT"
-            | "CB2_SETUPOVERWORLDFORQLPLAYBACK"
-            | "CB2_LOADMAPFORQLPLAYBACK"
-            | "CB2_ENTERFIELDFROMQUESTLOG"
-        ):
-            return GameState.QUEST_LOG
-        case "CB2_OVERWORLD":
-            result = GameState.OVERWORLD
-        case "BATTLEMAINCB2":
-            result = GameState.BATTLE
-        case "CB2_BAGMENURUN" | "SUB_80A3118":
-            result = GameState.BAG_MENU
-        case "CB2_UPDATEPARTYMENU" | "CB2_PARTYMENUMAIN":
-            result = GameState.PARTY_MENU
-        case "CB2_INITBATTLE" | "CB2_HANDLESTARTBATTLE" | "CB2_OVERWORLDBASIC":
-            result = GameState.BATTLE_STARTING
-        case "CB2_ENDWILDBATTLE":
-            result = GameState.BATTLE_ENDING
-        case "CB2_LOADMAP" | "CB2_LOADMAP2" | "CB2_DOCHANGEMAP" | "SUB_810CC80":
-            result = GameState.CHANGE_MAP
-        case "CB2_STARTERCHOOSE" | "CB2_CHOOSESTARTER":
-            result = GameState.CHOOSE_STARTER
-        case (
-            "CB2_INITCOPYRIGHTSCREENAFTERBOOTUP"
-            | "CB2_WAITFADEBEFORESETUPINTRO"
-            | "CB2_SETUPINTRO"
-            | "CB2_INTRO"
-            | "CB2_INITTITLESCREEN"
-            | "CB2_TITLESCREENRUN"
-            | "CB2_INITCOPYRIGHTSCREENAFTERTITLESCREEN"
-            | "CB2_INITMAINMENU"
-            | "MAINCB2"
-            | "MAINCB2_INTRO"
-        ):
-            result = GameState.TITLE_SCREEN
-        case "CB2_MAINMENU":
-            result = GameState.MAIN_MENU
-        case "CB2_EVOLUTIONSCENEUPDATE":
-            result = GameState.EVOLUTION
-        case "CB2_EGGHATCH" | "CB2_LOADEGGHATCH" | "CB2_EGGHATCH_0" | "CB2_EGGHATCH_1":
-            result = GameState.EGG_HATCH
-        case "CB2_WHITEOUT":
-            result = GameState.WHITEOUT
-        case "CB2_LOADNAMINGSCREEN" | "CB2_NAMINGSCREEN" | "SUB_80B5AA0":
-            result = GameState.NAMING_SCREEN
-        case (
-            "CB2_SHOWPOKEMONSUMMARYSCREEN"
-            | "CB2_INITSUMMARYSCREEN"
-            | "MAINCB2_SUMMARYSCREEN"
-            | "CB2_RETURNTOPARTYMENUFROMSUMMARYSCREEN"
-            | "CB2_SETUPPSS"
-            | "CB2_RUNPOKEMONSUMMARYSCREEN"
-            | "SUB_809DE44"
-            | "SUB_809D844"
-            | "SUB_8089F14"
-        ):
-            result = GameState.POKEMON_SUMMARY_SCREEN
-        case "CB2_POKESTORAGE":
-            result = GameState.POKE_STORAGE
-        case _:
-            result = GameState.UNKNOWN
-
-    state_cache.game_state = result
-    return result
 
 
 def game_has_started() -> bool:

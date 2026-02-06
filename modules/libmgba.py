@@ -20,7 +20,7 @@ import mgba.vfs
 from mgba import ffi, lib, libmgba_version_string
 from modules.console import console
 from modules.profiles import Profile
-from modules.tasks import task_is_active
+
 
 SAMPLE_RATE_MULTIPLIER = 59.727500569606 / 60
 
@@ -631,23 +631,4 @@ class LibmgbaEmulator:
         self._performance_tracker.time_spent_total -= time.time_ns() - begin
         self._performance_tracker.track_frame()
 
-    def get_task_look_ahead(self, task: str, limit: int = 1000) -> tuple[int, int] | None:
-        """
-        Uses peek_frame to run the emulation ahead to get a range of when certain tasks become active, then inactive
 
-        :param task: name of the task to check when active
-        :param limit: stop searching frames after limit emulated when looking ahead
-        :return: tuple of frame range while task active
-        """
-        task_started = None
-        with self.peek_frame(0):
-            for i in range(limit):
-                if not task_started and task_is_active(task):
-                    task_started = i
-                if task_started and task_is_active(task):
-                    while task_is_active(task) and i < limit:
-                        i += 1
-                        self._core.run_frame()
-                    return task_started, i
-                self._core.run_frame()
-        return None

@@ -1,6 +1,9 @@
 from collections import deque
 from tkinter import Button, PhotoImage, Tk
-
+from typing import TYPE_CHECKING, Union, Optional
+from tkinter import ttk, Canvas
+import time
+import contextlib
 import PIL.Image
 import PIL.ImageTk
 
@@ -12,10 +15,11 @@ try:
 except ImportError:
     can_use_opengl = False
 
-from modules.gui.debug_tabs import *
-from modules.gui.emulator_controls import DebugEmulatorControls, EmulatorControls
+
+from modules.gui.emulator_controls import EmulatorControls
 from modules.sprites import generate_placeholder_image
 from modules.version import pokebot_name, pokebot_version
+from modules.context import context
 
 # Defines how many frames can be reverted at the most in stepping mode.
 stepping_mode_frame_history_size = 128
@@ -53,19 +57,7 @@ class EmulatorScreen:
         self._controls: EmulatorControls | None = None
 
     def _initialise_controls(self, debug: bool = False) -> None:
-        if debug:
-            controls = DebugEmulatorControls(self.window)
-            controls.add_tab(TasksTab())
-            controls.add_tab(BattleTab())
-            controls.add_tab(PlayerTab())
-            controls.add_tab(MapTab(self.canvas))
-            controls.add_tab(MiscTab())
-            controls.add_tab(SymbolsTab())
-            controls.add_tab(EventFlagsTab())
-            controls.add_tab(EventVarsTab())
-            controls.add_tab(EmulatorTab())
-        else:
-            controls = EmulatorControls(self.window)
+        controls = EmulatorControls(self.window)
         self._controls = controls
 
     def enable(self) -> None:

@@ -5,12 +5,9 @@ from typing import Generator
 
 from modules.console import console
 from modules.context import context
-from modules.memory import get_game_state
-from modules.modes import BotMode, BotModeError, FrameInfo, get_bot_listeners, get_bot_mode_by_name
-from modules.plugins import plugin_profile_loaded, load_built_in_plugins
-from modules.state_cache import state_cache
-from modules.stats import StatsDatabase
-from modules.tasks import get_global_script_context, get_tasks
+
+from modules.modes import BotMode, BotModeError, FrameInfo, get_bot_mode_by_name
+
 
 # Contains a queue of tasks that should be run the next time a frame completes.
 # This is currently used by the HTTP server component (which runs in a separate thread) to trigger things
@@ -52,20 +49,8 @@ def main_loop() -> None:
         #
         # Regular (user-provided) plugins need to be loaded in `pokebot.py` as early as possible
         # because they might add bot modes.
-        load_built_in_plugins()
-        plugin_profile_loaded(context.profile)
 
-        context.stats = StatsDatabase(context.profile)
 
-        if context.config.http.http_server.enable:
-            from modules.web.http import start_http_server
-
-            start_http_server(
-                host=context.config.http.http_server.ip,
-                port=context.config.http.http_server.port,
-            )
-
-        context.bot_listeners = get_bot_listeners(context.rom)
         previous_frame_info: FrameInfo | None = None
 
         while True:
@@ -78,28 +63,14 @@ def main_loop() -> None:
 
             context.frame += 1
 
-            game_state = get_game_state()
-            script_context = get_global_script_context()
-            script_stack = script_context.stack if script_context is not None and script_context.is_active else []
-            task_list = get_tasks()
-            if task_list is not None:
-                active_tasks = [task.symbol.lower() for task in task_list]
-            else:
-                active_tasks = []
+
 
             frame_info = FrameInfo(
                 frame_count=context.emulator.get_frame_count(),
-                game_state=game_state,
-                active_tasks=active_tasks,
-                script_stack=script_stack,
                 controller_stack=[controller.__qualname__ for controller in context.controller_stack],
                 previous_frame=previous_frame_info,
             )
 
-            # Reset all bot listeners if the emulator has been reset.
-            if previous_frame_info is not None and previous_frame_info.frame_count > frame_info.frame_count:
-                state_cache.reset()
-                context.bot_listeners = get_bot_listeners(context.rom)
 
             if context.bot_mode == "Manual":
                 if not isinstance(context.bot_mode_instance, ManualBotMode):
@@ -129,12 +100,7 @@ def main_loop() -> None:
                 console.print_exception()
                 context.emulator.reset_held_buttons()
                 context.message = f"Internal Bot Error: {str(e)}"
-                if context.debug:
-                    context.debug_stepping_mode()
-                    if hasattr(sys, "gettrace") and sys.gettrace() is not None:
-                        breakpoint()
-                else:
-                    context.set_manual_mode()
+                context.set_manual_mode()
 
             inputs_each_frame.append(context.emulator.get_inputs())
             context.emulator.run_single_frame()

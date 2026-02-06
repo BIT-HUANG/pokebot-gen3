@@ -218,30 +218,10 @@ class BotModeError(Exception):
 @dataclass
 class FrameInfo:
     frame_count: int
-    game_state: "GameState"
-    script_stack: list[str]
-    active_tasks: list[str]
     controller_stack: list[str]
     previous_frame: Optional["FrameInfo"]
 
-    def game_state_changed(self) -> bool:
-        return self.previous_frame is None or self.game_state != self.previous_frame.game_state
 
-    def game_state_changed_to(self, game_state_to_check: "GameState") -> bool:
-        return self.game_state_changed() and self.game_state == game_state_to_check
-
-    def game_state_changed_from(self, game_state_to_check: "GameState") -> bool:
-        return (
-            self.game_state_changed()
-            and self.previous_frame is not None
-            and self.previous_frame.game_state == game_state_to_check
-        )
-
-    def task_is_active(self, task_name: str) -> bool:
-        return task_name.lower() in self.active_tasks
-
-    def script_is_active(self, script_name: str) -> bool:
-        return script_name in self.script_stack
 
 
 class BotListener:

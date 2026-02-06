@@ -8,11 +8,10 @@ from showinfm import show_in_file_manager
 
 from modules.console import console
 from modules.context import context
-from modules.gui.debug_menu import DebugMenu
 from modules.gui.multi_select_window import ask_for_confirmation
 from modules.libmgba import LibmgbaEmulator
-from modules.memory import GameState, get_game_state
-from modules.modes import get_bot_modes
+
+
 from modules.version import pokebot_name, pokebot_version
 
 
@@ -64,27 +63,23 @@ class EmulatorControls:
         self.profile_menu.add_command(
             label="Open Profile Folder", command=lambda: show_in_file_manager(str(context.profile.path))
         )
-        self.profile_menu.add_command(label="Reset Shiny Phase Stats", command=self._reset_shiny_phase_stats)
 
-        self.help_menu = Menu(self.window, tearoff=0)
-        self.help_menu.add_command(
-            label=f"{pokebot_name} Wiki",
-            command=lambda: webbrowser.open_new_tab("https://github.com/40Cakes/pokebot-gen3/tree/main/wiki"),
-        )
-        self.help_menu.add_command(
-            label="Discord #pokebot-gen3-support",
-            command=lambda: webbrowser.open_new_tab(
-                "https://discord.com/channels/1057088810950860850/1139190426834833528"
-            ),
-        )
+        # self.help_menu = Menu(self.window, tearoff=0)
+        # self.help_menu.add_command(
+        #     label=f"{pokebot_name} Wiki",
+        #     command=lambda: webbrowser.open_new_tab("https://github.com/40Cakes/pokebot-gen3/tree/main/wiki"),
+        # )
+        # self.help_menu.add_command(
+        #     label="Discord #pokebot-gen3-support",
+        #     command=lambda: webbrowser.open_new_tab(
+        #         "https://discord.com/channels/1057088810950860850/1139190426834833528"
+        #     ),
+        # )
 
         self.menu_bar.add_cascade(label="Emulator", menu=self.emulator_menu)
         self.menu_bar.add_cascade(label="Profile", menu=self.profile_menu)
-        self.menu_bar.add_cascade(label="Help", menu=self.help_menu)
+        # self.menu_bar.add_cascade(label="Help", menu=self.help_menu)
 
-        if context.debug:
-            self.debug_menu = DebugMenu(self.window)
-            self.menu_bar.add_cascade(label="Debug", menu=self.debug_menu)
 
         self.window.config(menu=self.menu_bar)
 
@@ -133,7 +128,6 @@ class EmulatorControls:
         self.bot_message.config(text=context.message)
 
     def on_frame_render(self):
-        self._update_stats()
         if context.bot_mode != self.last_known_bot_mode:
             self.last_known_bot_mode = context.bot_mode
             self.update()
@@ -162,36 +156,6 @@ class EmulatorControls:
                 self.bot_mode_menu.add_command(label="Manual", font=bold_font)
             else:
                 self.bot_mode_menu.add_command(label="Manual", command=lambda: select_bot_mode("Manual"))
-            self.bot_mode_menu.add_separator()
-            disabled_modes = []
-            for mode in get_bot_modes():
-                if mode.name() == context.bot_mode:
-                    self.bot_mode_menu.add_command(label=mode.name(), font=bold_font)
-                    continue
-
-                if get_game_state() not in (GameState.TITLE_SCREEN, GameState.MAIN_MENU):
-                    try:
-                        is_selectable = mode.is_selectable()
-                    except Exception:
-                        if context.debug:
-                            console.print_exception()
-                        is_selectable = False
-                else:
-                    is_selectable = False
-
-                if is_selectable:
-                    self.bot_mode_menu.add_command(label=mode.name(), command=lambda m=mode: select_bot_mode(m.name()))
-                else:
-                    disabled_modes.append(mode.name())
-            if disabled_modes:
-                if len(disabled_modes) < len(get_bot_modes()):
-                    self.bot_mode_menu.add_separator()
-                for mode_name in disabled_modes:
-                    self.bot_mode_menu.add_command(label=mode_name, state="disabled")
-            self.bot_mode_menu.tk_popup(
-                self.bot_mode_button.winfo_rootx(),
-                self.bot_mode_button.winfo_rooty() + self.bot_mode_button.winfo_height(),
-            )
 
         ttk.Label(group, text="Bot Mode:", justify="left").grid(row=0, sticky="W")
         self.bot_mode_button = ttk.Button(
@@ -307,96 +271,3 @@ class EmulatorControls:
         else:
             button.config(style="TButton", state="normal")
 
-    def _update_stats(self):
-        stats = []
-        current_fps = context.emulator.get_current_fps()
-        current_load = context.emulator.get_current_time_spent_in_bot_fraction()
-        if current_fps:
-            stats.append(f"{current_fps:,}fps ({current_fps / 59.727500569606:0.2f}x)")
-        if context.profile:
-            stats.append(f"{context.stats.encounter_rate:,}/h")
-        if context.debug:
-            stats.append(f"{round(current_load * 100, 1)}%")
-        self.stats_label.config(text=" | ".join(stats))
-
-    def _reset_shiny_phase_stats(self):
-        is_the_user_sure = ask_for_confirmation(dedent("""
-                This will reset all stats from your current shiny phase -- such
-                as encounters, IV/SV records, fishing attempts etc. -- to zero.
-                
-                That can be useful if for example you have changed location and
-                would like to start hunting on this route with a clean slate
-                instead of having some random encounters from the way to get
-                here show up.
-                
-                Total encounter numbers will not be affected.
-                
-                This cannot be undone! Are you sure you want to proceed?
-                """))
-
-        if is_the_user_sure:
-            context.stats.clear_current_shiny_phase()
-            context.message = "Shiny phase stats have been reset to zero."
-
-
-class DebugTab:
-    def draw(self, root: ttk.Notebook):
-        pass
-
-    def update(self, emulator: "LibmgbaEmulator"):
-        pass
-
-    def on_video_output_click(self, click_location: tuple[int, int], scale: int):
-        pass
-
-
-class DebugEmulatorControls(EmulatorControls):
-    def __init__(self, window: Tk):
-        super().__init__(window)
-        self.debug_notebook = None
-        self.debug_frame: Union[ttk.Frame, None] = None
-        self.debug_notebook: ttk.Notebook
-        self.debug_tabs: list[DebugTab] = []
-
-    def get_additional_width(self) -> int:
-        return 550
-
-    def add_to_window(self):
-        self.debug_frame = ttk.Frame(self.window, padding=(10, 5))
-        self.debug_frame.rowconfigure(0, weight=1)
-        self.debug_frame.columnconfigure(0, weight=1)
-        self.debug_frame.grid(row=0, column=1, rowspan=2, sticky="NWES")
-
-        self.debug_notebook = ttk.Notebook(self.debug_frame)
-        for tab in self.debug_tabs:
-            tab.draw(self.debug_notebook)
-        self.debug_notebook.grid(sticky="NWES")
-        self.debug_notebook.bind("<<NotebookTabChanged>>", self.on_tab_change)
-
-        super().add_to_window()
-
-    def add_tab(self, tab: DebugTab):
-        self.debug_tabs.append(tab)
-        if self.debug_frame is not None:
-            tab.draw(self.debug_notebook)
-
-    def on_frame_render(self):
-        super().on_frame_render()
-        index = self.debug_notebook.index("current")
-        self.debug_tabs[index].update(context.emulator)
-
-    def on_video_output_click(self, click_location: tuple[int, int], scale: int):
-        super().on_video_output_click(click_location, scale)
-        index = self.debug_notebook.index("current")
-        self.debug_tabs[index].on_video_output_click(click_location, scale)
-
-    def on_tab_change(self, event):
-        index = self.debug_notebook.index("current")
-        self.debug_tabs[index].update(context.emulator)
-
-    def remove_from_window(self):
-        super().remove_from_window()
-
-        if self.debug_frame:
-            self.debug_frame.destroy()
-        self.debug_frame = None

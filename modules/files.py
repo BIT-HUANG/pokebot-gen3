@@ -5,7 +5,7 @@ import string
 from pathlib import Path
 
 from modules.context import context
-from modules.pokemon import Pokemon
+
 
 
 def read_file(file: Path) -> str | None:
@@ -76,33 +76,6 @@ def make_string_safe_for_file_name(base_string: str) -> str:
         else:
             result += "_"
     return result
-
-
-def save_pk3(pokemon: Pokemon) -> None:
-    """
-    Takes the decrypted byte data of the Pokémon and outputs it in PKHeX-compatible .pk3 format
-    in the /profiles/[PROFILE]/pokemon dir. The data is decrypted and formatted to match PKHeX's
-    export standards.
-    """
-    pokemon_dir_path = context.profile.path / "pokemon"
-    if not pokemon_dir_path.exists():
-        pokemon_dir_path.mkdir()
-
-    pk3_file = f"{pokemon.species.national_dex_number}"
-    if pokemon.is_shiny:
-        pk3_file = f"{pk3_file} ★"
-
-    pk3_file = pokemon_dir_path / (
-        f"{pk3_file} - {make_string_safe_for_file_name(pokemon.species_name_for_stats)} - {pokemon.nature} "
-        f"[{pokemon.ivs.sum()}] - {hex(pokemon.personality_value)[2:].upper()}.pk3"
-    )
-
-    if os.path.exists(pk3_file):
-        os.remove(pk3_file)
-
-    # Open the file and write the decrypted data (export format)
-    with open(pk3_file, "wb") as binary_file:
-        binary_file.write(pokemon.to_pk3())
 
 
 def get_rng_state_history() -> set:

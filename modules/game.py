@@ -15,98 +15,6 @@ _character_table_japanese: list[str] = []
 _current_character_table: list[str] = []
 
 
-def _load_symbols(symbols_file: str, language: ROMLanguage) -> None:
-    global _symbols, _reverse_symbols
-
-    _symbols.clear()
-    _reverse_symbols.clear()
-
-    for d in [get_data_path() / "symbols", get_data_path() / "symbols" / "patches"]:
-        with open(d / symbols_file) as f:
-            for s in f:
-                address, _, length, label = s.split(" ")
-
-                address = int(address, 16)
-                length = int(length, 16)
-                label = label.strip()
-
-                # This label sometimes appear for the same memory address as others,
-                # blocking the names we're actually interested in. Thus, we just
-                # ignore those.
-                if label == ".gcc2_compiled" or label == ".gcc2_compiled.":
-                    continue
-
-                _symbols[label.upper()] = (address, length)
-                _reverse_symbols[address] = (label.upper(), label, length)
-
-    language_code = str(language)
-    language_patch_file = symbols_file.replace(".sym", ".yml")
-    language_patch_path = get_data_path() / "symbols" / "patches" / "language" / language_patch_file
-    if language_code in {"D", "I", "S", "F", "J"} and language_patch_path.is_file():
-        with open(language_patch_path, "r") as file:
-            language_patches = yaml.safe_load(file)
-            for label, addr_mapping in language_patches.items():
-                if language_code in addr_mapping:
-                    addresses_list = addr_mapping[language_code]
-
-                    if addresses_list is None:
-                        continue
-
-                    if isinstance(addresses_list, int):
-                        addresses_list = [addresses_list]
-
-                    if label.upper() in _symbols:
-                        existing_address = _symbols[label.upper()][0]
-                        if (
-                            existing_address in _reverse_symbols
-                            and _reverse_symbols[existing_address][0] == label.upper()
-                        ):
-                            _reverse_symbols.pop(existing_address, None)
-
-                    for addr in addresses_list:
-                        if addr is not None:
-                            _symbols[label.upper()] = (
-                                addr,
-                                _symbols[label.upper()][1] if label.upper() in _symbols else 0,
-                            )
-                            _reverse_symbols[addr] = (
-                                label.upper(),
-                                label,
-                                _symbols[label.upper()][1] if label.upper() in _symbols else 0,
-                            )
-
-
-def _load_event_flags_and_vars(file_name: str) -> None:  # TODO Japanese ROMs not working
-    global _event_flags, _reverse_event_flags, _event_vars, _reverse_event_vars
-
-    match file_name:
-        case "rs.txt":
-            flags_offset = 0x1220
-            vars_offset = 0x1340
-        case "emerald.txt":
-            flags_offset = 0x1270
-            vars_offset = 0x139C
-        case "frlg.txt":
-            flags_offset = 0x0EE0
-            vars_offset = 0x1000
-        case _:
-            raise RuntimeError("Invalid argument to _load_event_flags_and_vars()")
-
-    _event_flags.clear()
-    _reverse_event_flags.clear()
-    with open(get_data_path() / "event_flags" / file_name) as file_handle:
-        for s in file_handle:
-            number, name = s.strip().split(" ")
-            _event_flags[name] = (int(number) // 8) + flags_offset, int(number) % 8
-            _reverse_event_flags[int(number)] = name
-
-    _event_vars.clear()
-    _reverse_event_vars.clear()
-    with open(get_data_path() / "event_vars" / file_name) as file_handle:
-        for s in file_handle:
-            number, name = s.strip().split(" ")
-            _event_vars[name] = int(number) * 2 + vars_offset
-            _reverse_event_vars[int(number)] = name
 
 
 def _prepare_character_tables() -> None:
@@ -170,46 +78,6 @@ def _prepare_character_tables() -> None:
 
 def set_rom(rom: ROM) -> None:
     global _symbols, _current_character_table
-
-    match rom.game_code:
-        case "AXV":
-            if rom.language is ROMLanguage.Japanese or (rom.language is ROMLanguage.English and rom.revision == 0):
-                _load_symbols("pokeruby.sym", rom.language)
-            elif rom.language is ROMLanguage.German:
-                _load_symbols("pokeruby_de.sym", rom.language)
-            else:
-                _load_symbols("pokeruby_rev1.sym", rom.language)
-            _load_event_flags_and_vars("rs.txt")
-
-        case "AXP":
-            if rom.language is ROMLanguage.Japanese or (rom.language is ROMLanguage.English and rom.revision == 0):
-                _load_symbols("pokesapphire.sym", rom.language)
-            elif rom.language is ROMLanguage.German:
-                _load_symbols("pokesapphire_de.sym", rom.language)
-            else:
-                _load_symbols("pokesapphire_rev1.sym", rom.language)
-            _load_event_flags_and_vars("rs.txt")
-
-        case "BPE":
-            _load_symbols("pokeemerald.sym", rom.language)
-            _load_event_flags_and_vars("emerald.txt")
-
-        case "BPR":
-            match rom.revision:
-                case 0:
-                    _load_symbols("pokefirered.sym", rom.language)
-                case 1:
-                    _load_symbols("pokefirered_rev1.sym", rom.language)
-            _load_event_flags_and_vars("frlg.txt")
-
-        case "BPG":
-            match rom.revision:
-                case 0:
-                    _load_symbols("pokeleafgreen.sym", rom.language)
-                case 1:
-                    _load_symbols("pokeleafgreen_rev1.sym", rom.language)
-            _load_event_flags_and_vars("frlg.txt")
-
     set_character_table("japanese" if rom.language is ROMLanguage.Japanese else "international")
 
 
@@ -228,39 +96,6 @@ def get_symbol(symbol_name: str) -> tuple[int, int]:
 
     return _symbols[canonical_name]
 
-
-def get_symbol_name(address: int, pretty_name: bool = False) -> str:
-    """
-    Get the name of a symbol based on the address
-
-    :param address: address of the symbol
-    :param pretty_name: Whether to return the symbol name all-uppercase (False) or
-                        with 'natural' case (True)
-
-    :return: name of the symbol (str)
-    """
-    return _reverse_symbols.get(address, ("", ""))[(1 if pretty_name else 0)]
-
-
-def get_symbol_name_before(address: int, pretty_name: bool = False) -> str:
-    """
-    Looks up the name of the symbol that comes at or before a memory address (i.e.
-    the name of the symbol that this address supposedly belongs to.)
-
-    :param address: Address to look up
-    :param pretty_name: Whether to return the symbol name all-uppercase (False) or
-                        with 'natural' case (True)
-    :return: name of the symbol (str)
-    """
-    maximum_lookahead = 1024
-    return next(
-        (
-            _reverse_symbols[address - lookahead][(1 if pretty_name else 0)]
-            for lookahead in range(maximum_lookahead)
-            if address - lookahead in _reverse_symbols
-        ),
-        hex(address),
-    )
 
 
 def get_event_flag_offset(flag_name: str) -> tuple[int, int]:
