@@ -81,8 +81,6 @@ def main_loop() -> None:
                 context.controller_stack.append(context.bot_mode_instance.run())
 
             try:
-                for listener in context.bot_listeners.copy():
-                    listener.handle_frame(context.bot_mode_instance, frame_info)
                 if context.bot_mode == "Manual":
                     context.controller_stack = []
                 if len(context.controller_stack) > 0:

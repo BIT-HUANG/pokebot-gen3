@@ -220,10 +220,3 @@ class FrameInfo:
     frame_count: int
     controller_stack: list[str]
     previous_frame: Optional["FrameInfo"]
-
-
-
-
-class BotListener:
-    def handle_frame(self, bot_mode: BotMode, frame: FrameInfo):
-        raise NotImplementedError
