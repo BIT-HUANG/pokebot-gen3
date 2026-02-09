@@ -18,7 +18,7 @@ from modules.gui.load_state_window import LoadStateWindow
 from modules.gui.select_profile_screen import SelectProfileScreen
 from modules.libmgba import LibmgbaEmulator, input_map
 from modules.sprites import choose_random_sprite, crop_sprite_square
-from modules.version import pokebot_name, pokebot_version
+
 
 if TYPE_CHECKING:
     from pokebot import StartupSettings
@@ -115,7 +115,7 @@ class PokebotGui:
     def _reset_screen(self) -> None:
         if self._current_screen is not None:
             self._current_screen.disable()
-        self.window.title(f"{pokebot_name} {pokebot_version}")
+        self.window.title("BD4SLW mGBA")
 
     def _enable_create_profile_screen(self) -> None:
         self._reset_screen()

@@ -5,14 +5,9 @@ from tkinter import Menu, Tk, ttk
 from typing import Union
 
 from showinfm import show_in_file_manager
-
-from modules.console import console
 from modules.context import context
-from modules.gui.multi_select_window import ask_for_confirmation
-from modules.libmgba import LibmgbaEmulator
 
 
-from modules.version import pokebot_name, pokebot_version
 
 
 class EmulatorControls:
@@ -66,7 +61,7 @@ class EmulatorControls:
 
         # self.help_menu = Menu(self.window, tearoff=0)
         # self.help_menu.add_command(
-        #     label=f"{pokebot_name} Wiki",
+        #     label=f"BD4SLW mGBA Wiki",
         #     command=lambda: webbrowser.open_new_tab("https://github.com/40Cakes/pokebot-gen3/tree/main/wiki"),
         # )
         # self.help_menu.add_command(
@@ -247,7 +242,7 @@ class EmulatorControls:
 
         version_label = ttk.Label(
             group,
-            text=f"{context.rom.short_game_name} - {pokebot_name} {pokebot_version}",
+            text=f"{context.rom.short_game_name} - BD4SLW mGBA",
             foreground="grey" if not context.rom.game_name.startswith("Unsupported") else "red",
             font=tkinter.font.Font(size=9),
         )

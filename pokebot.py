@@ -8,7 +8,7 @@ import platform
 from dataclasses import dataclass
 
 from modules.runtime import is_bundled_app, get_base_path
-from modules.version import pokebot_name, pokebot_version
+
 
 OS_NAME = platform.system()
 gui = None
@@ -65,7 +65,7 @@ def directory_arg(value: str) -> pathlib.Path:
 
 def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
     """Parses command-line arguments."""
-    parser = argparse.ArgumentParser(description=f"{pokebot_name} {pokebot_version}")
+    parser = argparse.ArgumentParser(description="BD4SLW mGBA")
     parser.add_argument(
         "profile",
         nargs="?",
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         win32api.SetConsoleCtrlHandler(win32_signal_handler, True)
 
     startup_settings = parse_arguments(get_bot_mode_names())
-    console.print(f"Starting [bold cyan]{pokebot_name} {pokebot_version}![/]")
+    console.print("Starting BD4SLW mGBA!")
 
     # if not is_bundled_app() and not (get_base_path() / ".git").is_dir():
     #     run_updater()

@@ -9,7 +9,7 @@ from modules.profiles import create_profile, list_available_profiles, profile_di
 from modules.roms import ROM, list_available_roms
 from modules.runtime import get_sprites_path
 from modules.save_import import MigrationError, migrate_save_state
-from modules.version import pokebot_name
+
 
 
 class CreateProfileScreen:
@@ -53,7 +53,7 @@ class CreateProfileScreen:
 
     def _show_welcome_message(self, row: int = 0) -> None:
         welcome_text = (
-            f"Hey! This seems to be your first launch of {pokebot_name}.\n\n"
+            f"Hey! This seems to be your first launch of BD4SLW mGBA.\n\n"
             "To get started you first need to create a profile.\n\n"
             "A profile stores your save game, save states, bot config, "
             'bot statistics, screenshots etc. Profiles are stored in the "profiles/" folder.\n'

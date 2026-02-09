@@ -18,7 +18,6 @@ except ImportError:
 
 from modules.gui.emulator_controls import EmulatorControls
 from modules.sprites import generate_placeholder_image
-from modules.version import pokebot_name, pokebot_version
 from modules.context import context
 
 # Defines how many frames can be reverted at the most in stepping mode.
@@ -61,7 +60,7 @@ class EmulatorScreen:
         self._controls = controls
 
     def enable(self) -> None:
-        app_name = pokebot_name
+        app_name = "DQA"
         try:
             language = ""
             with contextlib.suppress(ImportError):
@@ -80,7 +79,7 @@ class EmulatorScreen:
         except:
             pass
 
-        self.window.title(f"{context.profile.path.name} | {app_name} {pokebot_version}")
+        self.window.title(f"{app_name} BD4SLW mGBA | {context.profile.path.name}")
         self.window.resizable(context.debug, context.debug)
         self.window.rowconfigure(0, weight=1)
         self.window.columnconfigure(0, weight=1)

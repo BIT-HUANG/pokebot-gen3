@@ -2,7 +2,7 @@ import platform
 import sys
 
 from modules.runtime import get_base_path, is_bundled_app, is_virtualenv
-from modules.version import pokebot_name, pokebot_version
+
 
 recommended_python_version = "3.13"
 supported_python_versions = ["3.11", "3.12", "3.13"]
@@ -102,7 +102,7 @@ def update_requirements(ask_for_confirmation: bool = True) -> bool:
     # Some dependencies only work with 64-bit Python. Since this isn't the 90s anymore,
     # we'll just require that.
     if platform.architecture()[0] != "64bit":
-        print(f"ERROR: A 64-bit version of Python is required in order to run {pokebot_name} {pokebot_version}.\n")
+        print(f"ERROR: A 64-bit version of Python is required in order to run BD4SLW mGBA.\n")
         print(f"You are currently running a {platform.architecture()[0]} version.")
         sys.exit(1)
 
@@ -236,7 +236,7 @@ def check_requirements() -> bool:
         with open(requirements_file, "r") as file:
             if file.read() != requirements_hash:
                 print(
-                    f"This is a newer version of {pokebot_name} than you have run before, "
+                    f"This is a newer version of BD4SLW mGBA than you have run before, "
                     f"or you have updated your Python version.\n"
                     f"We will have to check again if all requirements are met."
                 )
@@ -244,7 +244,7 @@ def check_requirements() -> bool:
                 return update_requirements()
     else:
         print(
-            f"Seems like this is the first time you are running {pokebot_name}!\n"
+            f"Seems like this is the first time you are running BD4SLW mGBA!\n"
             "We will check if your system meets all the requirements to run it."
         )
         print("")
