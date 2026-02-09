@@ -24,7 +24,6 @@ class GlfwGui:
         # The GLFW frontend doesn't have any way to open confirmation
         # windows, so setting this to `True` means that any question
         # will be asked on the command line instead.
-        self.is_headless = True
 
         self._scale = 2
 

@@ -38,7 +38,6 @@ class PokebotGui:
         self._on_exit = on_exit
         self._startup_settings: "StartupSettings | None" = None
         self.inputs_enabled = True
-        self.is_headless = False
 
         self.window.geometry("540x400")
         self.window.resizable(context.debug, True)

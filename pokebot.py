@@ -40,7 +40,6 @@ class StartupSettings:
     profile: "Profile | None"
     debug: bool
     bot_mode: str
-    headless: bool
     no_video: bool
     no_audio: bool
     no_theme: bool
@@ -78,7 +77,6 @@ def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
         choices=["0", "1", "2", "3", "4", "8", "16", "32"],
         help="Initial emulation speed (0 for unthrottled; default: 1)",
     )
-    parser.add_argument("-hl", "--headless", action="store_true", help="Run without a GUI, only using the console.")
     parser.add_argument("-nv", "--no-video", action="store_true", help="Turn off video output by default.")
     parser.add_argument("-na", "--no-audio", action="store_true", help="Turn off audio output by default.")
     parser.add_argument("-nt", "--no-theme", action="store_true", help="Turn off the fancy GUI theme.")
@@ -100,7 +98,6 @@ def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
         profile=preselected_profile,
         debug=bool(args.debug),
         bot_mode=args.bot_mode or "Manual",
-        headless=bool(args.headless),
         no_video=bool(args.no_video),
         no_audio=bool(args.no_audio),
         no_theme=bool(args.no_theme),
