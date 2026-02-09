@@ -144,18 +144,13 @@ if __name__ == "__main__":
     # if not is_bundled_app() and not (get_base_path() / ".git").is_dir():
     #     run_updater()
 
-    if startup_settings.headless:
-        from modules.gui.headless import PokebotHeadless
-
-        gui = PokebotHeadless(main_loop, on_exit)
-    else:
-        from modules.gui import PokebotGui
+    from modules.gui import PokebotGui
 
         # Previously, theming could _only_ be disabled through an environment flag. Now, it can
         # be disabled using a command-line argument but for backward-compatibility reasons we
         # accept either.
-        no_theme = os.getenv("POKEBOT_UNTHEMED") == "1" or startup_settings.no_theme
-        gui = PokebotGui(main_loop, on_exit, no_theme=no_theme, use_opengl=startup_settings.use_opengl)
+    no_theme = os.getenv("POKEBOT_UNTHEMED") == "1" or startup_settings.no_theme
+    gui = PokebotGui(main_loop, on_exit, no_theme=no_theme, use_opengl=startup_settings.use_opengl)
     context.gui = gui
 
     gui.run(startup_settings)
