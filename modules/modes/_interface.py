@@ -14,13 +14,6 @@ if TYPE_CHECKING:
     from modules.pokemon import Pokemon
 
 
-class BattleAction(Enum):
-    Fight = auto()
-    RunAway = auto()
-    Catch = auto()
-    CustomAction = auto()
-
-
 class BotMode:
     @staticmethod
     def name() -> str:
