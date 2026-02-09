@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Type
 
-from ._interface import BotMode, FrameInfo
+from ._interface import BotMode
 
 
 

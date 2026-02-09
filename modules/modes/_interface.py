@@ -204,9 +204,3 @@ class BotMode:
         return next(self._iterator)
 
 
-
-@dataclass
-class FrameInfo:
-    frame_count: int
-    controller_stack: list[str]
-    previous_frame: Optional["FrameInfo"]

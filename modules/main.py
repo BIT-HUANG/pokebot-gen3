@@ -6,7 +6,7 @@ from typing import Generator
 from modules.console import console
 from modules.context import context
 
-from modules.modes import BotMode, FrameInfo
+from modules.modes import BotMode
 
 
 # Contains a queue of tasks that should be run the next time a frame completes.
@@ -51,7 +51,7 @@ def main_loop() -> None:
         # because they might add bot modes.
 
 
-        previous_frame_info: FrameInfo | None = None
+
 
         while True:
             # Process work queue, which can be used to get the main thread to access the emulator
@@ -65,11 +65,7 @@ def main_loop() -> None:
 
 
 
-            frame_info = FrameInfo(
-                frame_count=context.emulator.get_frame_count(),
-                controller_stack=[controller.__qualname__ for controller in context.controller_stack],
-                previous_frame=previous_frame_info,
-            )
+
 
 
             if context.bot_mode == "Manual":
@@ -96,8 +92,7 @@ def main_loop() -> None:
 
             inputs_each_frame.append(context.emulator.get_inputs())
             context.emulator.run_single_frame()
-            previous_frame_info = frame_info
-            previous_frame_info.previous_frame = None
+
 
     except SystemExit:
         raise
