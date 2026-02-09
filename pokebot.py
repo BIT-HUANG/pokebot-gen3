@@ -39,7 +39,6 @@ atexit.register(on_exit)
 class StartupSettings:
     profile: "Profile | None"
     debug: bool
-    bot_mode: str
     no_video: bool
     no_audio: bool
     no_theme: bool
@@ -62,7 +61,7 @@ def directory_arg(value: str) -> pathlib.Path:
     return path_obj
 
 
-def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
+def parse_arguments() -> StartupSettings:
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(description="BD4SLW mGBA")
     parser.add_argument(
@@ -70,7 +69,6 @@ def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
         nargs="?",
         help="Profile to initialize. Otherwise, the profile selection menu will appear.",
     )
-    parser.add_argument("-m", "--bot-mode", choices=bot_mode_names, help="Initial bot mode (default: Manual).")
     parser.add_argument(
         "-s",
         "--emulation-speed",
@@ -97,7 +95,6 @@ def parse_arguments(bot_mode_names: list[str]) -> StartupSettings:
     return StartupSettings(
         profile=preselected_profile,
         debug=bool(args.debug),
-        bot_mode=args.bot_mode or "Manual",
         no_video=bool(args.no_video),
         no_audio=bool(args.no_audio),
         no_theme=bool(args.no_theme),
@@ -117,7 +114,6 @@ if __name__ == "__main__":
     from modules.console import console
     from modules.exceptions_hook import register_exception_hook
     from modules.main import main_loop
-    from modules.modes import get_bot_mode_names
     from modules.profiles import Profile, profile_directory_exists, load_profile_by_name
     # from updater import run_updater
 
@@ -135,7 +131,7 @@ if __name__ == "__main__":
 
         win32api.SetConsoleCtrlHandler(win32_signal_handler, True)
 
-    startup_settings = parse_arguments(get_bot_mode_names())
+    startup_settings = parse_arguments()
     console.print("Starting BD4SLW mGBA!")
 
     # if not is_bundled_app() and not (get_base_path() / ".git").is_dir():

@@ -6,7 +6,7 @@ from typing import Generator
 from modules.console import console
 from modules.context import context
 
-from modules.modes import BotMode, FrameInfo, get_bot_mode_by_name
+from modules.modes import BotMode, FrameInfo
 
 
 # Contains a queue of tasks that should be run the next time a frame completes.
@@ -76,9 +76,7 @@ def main_loop() -> None:
                 if not isinstance(context.bot_mode_instance, ManualBotMode):
                     context.emulator.reset_held_buttons()
                 context.bot_mode_instance = ManualBotMode()
-            elif len(context.controller_stack) == 0:
-                context.bot_mode_instance = get_bot_mode_by_name(context.bot_mode)()
-                context.controller_stack.append(context.bot_mode_instance.run())
+
 
             try:
                 if context.bot_mode == "Manual":
