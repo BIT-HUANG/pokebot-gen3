@@ -6,7 +6,7 @@ from typing import Generator
 from modules.console import console
 from modules.context import context
 
-from modules.modes import BotMode, BotModeError, FrameInfo, get_bot_mode_by_name
+from modules.modes import BotMode, FrameInfo, get_bot_mode_by_name
 
 
 # Contains a queue of tasks that should be run the next time a frame completes.
@@ -87,10 +87,6 @@ def main_loop() -> None:
                     next(context.controller_stack[-1])
             except (StopIteration, GeneratorExit):
                 context.controller_stack.pop()
-            except BotModeError as e:
-                context.emulator.reset_held_buttons()
-                context.message = str(e)
-                context.set_manual_mode()
             except TimeoutError:
                 console.print_exception()
                 sys.exit(1)

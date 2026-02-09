@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Type
 
-from ._interface import BattleAction, BotMode, BotModeError, FrameInfo
+from ._interface import BattleAction, BotMode, FrameInfo
 
 
 if TYPE_CHECKING:

@@ -211,9 +211,6 @@ class BotMode:
         return next(self._iterator)
 
 
-class BotModeError(Exception):
-    pass
-
 
 @dataclass
 class FrameInfo:
