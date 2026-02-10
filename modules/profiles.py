@@ -64,8 +64,6 @@ def load_profile(path: Path) -> Profile:
     rom_file = ROMS_DIRECTORY / metadata.rom.file_name
     if rom_file.is_file():
         rom = load_rom_data(rom_file)
-        if rom.is_gen2:
-            raise RuntimeError("Only Generation 3 games are supported")
         return Profile(rom, path, last_played)
     else:
         for rom in list_available_roms():
