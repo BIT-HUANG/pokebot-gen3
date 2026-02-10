@@ -67,17 +67,6 @@ class KeysGBA(BaseConfig):
     Select: str = "BackSpace"
 
 
-class Logging(BaseConfig):
-    """Schema for the logging configuration."""
-
-    filename: ClassVar = "logging.yml"
-    create_save_state_for_shiny: bool = True
-    log_encounters: bool = False
-    log_encounters_to_console: bool = True
-    shiny_gifs: bool = True
-    tcg_cards: bool = True
-
-
 
 class ProfileMetadata(BaseConfig):
     """Schema for the metadata configuration file part of profiles."""
