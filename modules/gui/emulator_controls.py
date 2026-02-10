@@ -1,6 +1,4 @@
 import tkinter.font
-import webbrowser
-from textwrap import dedent
 from tkinter import Menu, Tk, ttk
 from typing import Union
 
