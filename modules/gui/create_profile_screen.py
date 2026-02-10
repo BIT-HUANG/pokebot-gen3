@@ -7,7 +7,7 @@ from PIL import Image, ImageOps, ImageTk
 
 from modules.profiles import create_profile, list_available_profiles, profile_directory_exists
 from modules.roms import ROM, list_available_roms
-from modules.runtime import get_sprites_path
+from modules.icon import get_icon
 from modules.save_import import MigrationError, migrate_save_state
 
 
@@ -62,23 +62,13 @@ class CreateProfileScreen:
         container = ttk.Frame(self.frame, padding=(0, 40, 0, 0))
         container.grid(sticky="N", row=row)
 
-        birch_sprite = Image.open(get_sprites_path() / "other" / "Birch.png")
+        birch_sprite = Image.open(get_icon())
         birch_sprite = ImageOps.scale(birch_sprite, 2, resample=False)
-        flipped_birch_sprite = ImageOps.mirror(birch_sprite)
         birch_image = ImageTk.PhotoImage(birch_sprite)
-        flipped_birch_image = ImageTk.PhotoImage(flipped_birch_sprite)
 
-        icon = ttk.Label(container, image=flipped_birch_image, padding=(0, 0, 15, 0))
+        icon = ttk.Label(container, image=birch_image, padding=(0, 0, 15, 0))
         icon.grid(sticky="N", row=0, column=0)
         icon.img1 = birch_image
-        icon.img2 = flipped_birch_image
-        # Very important.
-        icon.bind(
-            "<Button-1>",
-            lambda *_: icon.config(
-                image=(flipped_birch_image if icon.cget("image")[0] == str(birch_image) else birch_image)
-            ),
-        )
 
         text = ttk.Label(container, text=welcome_text, wraplength=360)
         text.grid(sticky="N", row=0, column=1)

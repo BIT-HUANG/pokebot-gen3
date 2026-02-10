@@ -9,7 +9,7 @@ import PIL.ImageDraw
 import PIL.ImageTk
 
 from modules.context import context
-from modules.runtime import get_sprites_path
+from modules.icon import get_icon
 
 
 class LoadStateWindow:
@@ -112,7 +112,7 @@ class LoadStateWindow:
                     "TM37",
                     "TM40",
                 ]
-                sprite = PIL.Image.open(get_sprites_path() / "items" / f"{random.choice(possible_sprites)}.png")
+                sprite = PIL.Image.open(get_icon())
                 if sprite.mode != "RGBA":
                     sprite = sprite.convert("RGBA")
                 sprite = sprite.resize((sprite.width * 3, sprite.height * 3), resample=False)
