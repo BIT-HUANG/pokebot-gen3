@@ -94,24 +94,6 @@ class LoadStateWindow:
                 placeholder = PIL.Image.new(mode="RGBA", size=(240, 160))
                 draw = PIL.ImageDraw.Draw(placeholder)
                 draw.rectangle(xy=[(0, 0), (placeholder.width, placeholder.height)], fill="#000000FF")
-                possible_sprites = [
-                    "TM01",
-                    "TM02",
-                    "TM03",
-                    "TM04",
-                    "TM05",
-                    "TM06",
-                    "TM07",
-                    "TM08",
-                    "TM09",
-                    "TM11",
-                    "TM12",
-                    "TM23",
-                    "TM24",
-                    "TM30",
-                    "TM37",
-                    "TM40",
-                ]
                 sprite = PIL.Image.open(get_icon())
                 if sprite.mode != "RGBA":
                     sprite = sprite.convert("RGBA")
