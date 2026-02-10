@@ -17,7 +17,7 @@ except ImportError:
 
 
 from modules.gui.emulator_controls import EmulatorControls
-from modules.sprites import generate_placeholder_image
+from modules.icon import generate_placeholder_image
 from modules.context import context
 
 # Defines how many frames can be reverted at the most in stepping mode.

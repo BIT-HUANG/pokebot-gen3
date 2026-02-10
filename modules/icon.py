@@ -1,22 +1,14 @@
-import random
 from pathlib import Path
-
 import PIL.Image
 import PIL.ImageDraw
 
-from modules.files import make_string_safe_for_file_name
-from modules.runtime import get_sprites_path
 
-
-def choose_random_sprite() -> Path:
-    """
-    :return: Path to a random Pokémon sprite file
-    """
+def get_icon() -> Path:
     return Path.cwd() / "DQA.png"
 
 
 
-def crop_sprite_square(path: Path) -> PIL.Image:
+def crop_icon_square(path: Path) -> PIL.Image:
     """
     Crops a sprite to the smallest possible size while keeping the image square.
     :param path: Path to the sprite
@@ -73,7 +65,7 @@ def generate_placeholder_image(width: int, height: int) -> PIL.Image:
     draw.rectangle(xy=[(0, 0), (placeholder.width, placeholder.height)], fill="#000000FF")
 
     # Paste a random sprite on top
-    sprite = PIL.Image.open(choose_random_sprite())
+    sprite = PIL.Image.open(get_icon())
     if sprite.mode != "RGBA":
         sprite = sprite.convert("RGBA")
     sprite_position = (placeholder.width // 2 - sprite.width // 2, placeholder.height // 2 - sprite.height // 2)

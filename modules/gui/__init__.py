@@ -16,7 +16,7 @@ from modules.gui.emulator_screen import EmulatorScreen
 from modules.gui.load_state_window import LoadStateWindow
 from modules.gui.select_profile_screen import SelectProfileScreen
 from modules.libmgba import LibmgbaEmulator, input_map
-from modules.sprites import choose_random_sprite, crop_sprite_square
+from modules.icon import get_icon, crop_icon_square
 
 
 if TYPE_CHECKING:
@@ -106,7 +106,7 @@ class PokebotGui:
             with contextlib.suppress(ImportError):
                 from win32com.shell import shell
                 shell.SetCurrentProcessExplicitAppUserModelID("DQA.mGBA")
-        sprite = crop_sprite_square(choose_random_sprite())
+        sprite = crop_icon_square(get_icon())
         self.icon = PIL.ImageTk.PhotoImage(sprite)
         self.window.iconphoto(False, self.icon)
 
