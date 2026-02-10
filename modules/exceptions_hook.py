@@ -1,6 +1,5 @@
 import sys
 
-from modules.console import console
 from modules.context import context
 from modules.exceptions import PrettyException
 
@@ -21,7 +20,7 @@ def exception_hook(exc_type: type[Exception], exc_instance: Exception, traceback
     if exc_instance.recommendation:
         recommendation = f"{exc_instance.recommendation_color}{exc_instance.recommendation}[/]"
         message = f"{message}\n{recommendation}"
-    console.print(message)
+    print(message)
     exit_code = exc_instance.exit_code
     if exit_code is not None:
         sys.exit(exit_code)

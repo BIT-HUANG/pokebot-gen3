@@ -9,7 +9,6 @@ import PIL.ImageTk
 import darkdetect
 from ttkthemes import ThemedTk
 
-from modules.console import console
 from modules.context import context
 from modules.game import set_rom
 from modules.gui.create_profile_screen import CreateProfileScreen
@@ -175,7 +174,7 @@ class PokebotGui:
                         self._emulator_screen.scale = max(1, self._emulator_screen.scale - 1)
                     case "toggle_manual":
                         context.toggle_manual_mode()
-                        console.print(f"Now in [cyan]{context.bot_mode}[/] mode")
+                        print(f"Now in [cyan]{context.bot_mode}[/] mode")
                         context.emulator.set_inputs(0)
                     case "reload_config":
                         context.reload_config()

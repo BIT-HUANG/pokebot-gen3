@@ -111,14 +111,9 @@ if __name__ == "__main__":
 
         check_requirements()
     from modules.context import context
-    from modules.console import console
-    from modules.exceptions_hook import register_exception_hook
     from modules.main import main_loop
     from modules.profiles import Profile, profile_directory_exists, load_profile_by_name
     # from updater import run_updater
-
-    register_exception_hook()
-
     # This catches the signal Windows emits when the underlying console window is closed
     # by the user. We still want to save the emulator state in that case, which would not
     # happen by default!
@@ -132,7 +127,7 @@ if __name__ == "__main__":
         win32api.SetConsoleCtrlHandler(win32_signal_handler, True)
 
     startup_settings = parse_arguments()
-    console.print("Starting BD4SLW mGBA!")
+    print("Starting BD4SLW mGBA!")
 
     # if not is_bundled_app() and not (get_base_path() / ".git").is_dir():
     #     run_updater()

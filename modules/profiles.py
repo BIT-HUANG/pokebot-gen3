@@ -7,7 +7,6 @@ from pathlib import Path
 from modules import exceptions
 from modules.config import load_config_file, save_config_file
 from modules.config.schemas_v1 import ProfileMetadata, ProfileMetadataROM
-from modules.console import console
 from modules.roms import ROM, ROMS_DIRECTORY, list_available_roms, load_rom_data
 from modules.runtime import get_base_path
 
@@ -80,7 +79,7 @@ def load_profile(path: Path) -> Profile:
             ):
                 return Profile(rom, path, last_played)
 
-    console.print(
+    print(
         f"[bold red]Could not find ROM `{metadata.rom.file_name}` for profile `{path.name}`, "
         f"please place `{metadata.rom.file_name}` into `{ROMS_DIRECTORY}`!"
     )

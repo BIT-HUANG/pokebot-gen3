@@ -2,8 +2,6 @@ from pathlib import Path
 
 from notifypy import Notify
 from notifypy.exceptions import UnsupportedPlatform
-
-from modules.console import console
 from modules.context import context
 from modules.sprites import choose_random_sprite
 
@@ -28,5 +26,5 @@ def desktop_notification(title: str, message: str, icon: Path = None) -> None:
         # The `notifypy` library does not support Windows 11 and will throw that error, so in that case
         # there's nothing the user (or we) could do about it. Just ignore that error silently.
         pass
-    except Exception:
-        console.print_exception()
+    except Exception as e:
+        print(e)

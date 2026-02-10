@@ -2,10 +2,7 @@ import queue
 import sys
 from collections import deque
 from typing import Generator
-
-from modules.console import console
 from modules.context import context
-
 from modules.modes import BotMode
 
 
@@ -36,11 +33,11 @@ def main_loop() -> None:
     """
     try:
         if context.rom.game_name.startswith("Unsupported "):
-            console.print("\n[red bold]You are running an unsupported game![/]")
-            console.print(
+            print("\n[red bold]You are running an unsupported game![/]")
+            print(
                 "\n[red]This ROM does not appear to be an exact copy of an original Gen3 game.\nIt's possible that is has been modified, or that it got corrupted while dumping the cartridge.\nWhile this might still work, chances are that some or all bot functions will not.[/]"
             )
-            console.print("\n[red bold]Please do not ask for support if there are any problem with this game.[/]\n")
+            print("\n[red bold]Please do not ask for support if there are any problem with this game.[/]\n")
 
         # Built-in plugins are only loaded if some bot configuration actually requires them.
         # Since profile configuration can override global configuration, they can only be
