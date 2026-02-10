@@ -33,11 +33,11 @@ def main_loop() -> None:
     """
     try:
         if context.rom.game_name.startswith("Unsupported "):
-            print("\n[red bold]You are running an unsupported game![/]")
+            print("\nYou are running an unsupported game!")
             print(
-                "\n[red]This ROM does not appear to be an exact copy of an original Gen3 game.\nIt's possible that is has been modified, or that it got corrupted while dumping the cartridge.\nWhile this might still work, chances are that some or all bot functions will not.[/]"
+                "\nThis ROM does not appear to be an exact copy of an original Gen3 game.\nIt's possible that is has been modified, or that it got corrupted while dumping the cartridge.\nWhile this might still work, chances are that some or all bot functions will not."
             )
-            print("\n[red bold]Please do not ask for support if there are any problem with this game.[/]\n")
+            print("\nPlease do not ask for support if there are any problem with this game.\n")
 
         # Built-in plugins are only loaded if some bot configuration actually requires them.
         # Since profile configuration can override global configuration, they can only be
@@ -78,11 +78,11 @@ def main_loop() -> None:
                     next(context.controller_stack[-1])
             except (StopIteration, GeneratorExit):
                 context.controller_stack.pop()
-            except TimeoutError:
-                console.print_exception()
+            except TimeoutError as e:
+                print(e)
                 sys.exit(1)
             except Exception as e:
-                console.print_exception()
+                print(e)
                 context.emulator.reset_held_buttons()
                 context.message = f"Internal Bot Error: {str(e)}"
                 context.set_manual_mode()

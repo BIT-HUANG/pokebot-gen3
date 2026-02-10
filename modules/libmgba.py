@@ -110,7 +110,7 @@ class LibmgbaEmulator:
 
     def __init__(self, profile: Profile, on_frame_callback: callable, is_test_run: bool = False):
         if not is_test_run:
-            print(f"Running [cyan]{libmgba_version_string()}[/]")
+            print(f"Running {libmgba_version_string()}")
 
         # Prevents relentless spamming to stdout by libmgba.
         mgba.log.silence()
@@ -188,8 +188,8 @@ class LibmgbaEmulator:
                 self._audio_stream.start()
             self._audio_sample_rate = sample_rate
         except sounddevice.PortAudioError as error:
-            print(f"[red]{str(error)}[/]")
-            print("[red bold]Failed to initialise sound![/] [red]Sound will be disabled.[/]")
+            print(f"{str(error)}")
+            print("Failed to initialise sound! Sound will be disabled.")
             self._audio_stream = None
             self._gba_audio.set_rate(int(32768 * SAMPLE_RATE_MULTIPLIER))
             self._audio_sample_rate = 32768
@@ -235,7 +235,7 @@ class LibmgbaEmulator:
         It's saving the current emulator state into a save state file so that the next time the bot starts,
         it can just continue where it has been so rudely interrupted.
         """
-        print("[yellow]Shutting down...[/]")
+        print("Shutting down...")
 
         self.create_save_state()
 
@@ -344,7 +344,7 @@ class LibmgbaEmulator:
                 self._audio_stream = None
         except sounddevice.PortAudioError as error:
             action = "disabling" if was_throttled else "enabling"
-            print(f"[bold red]Error while {action} audio:[/] [red]{str(error)}[/]")
+            print(f"Error while {action} audio: {str(error)}")
             self._reset_audio()
 
     def get_speed_factor(self) -> float:
@@ -619,7 +619,7 @@ class LibmgbaEmulator:
                 try:
                     self._audio_stream.write(audio_data)
                 except sounddevice.PortAudioError as error:
-                    print(f"[bold red]Error while playing audio:[/] [red]{str(error)}[/]")
+                    print(f"Error while playing audio: {str(error)}")
                     self._reset_audio()
             else:
                 target_frame_duration = (1 / 60) / self._speed_factor

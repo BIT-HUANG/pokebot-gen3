@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from modules import exceptions
 from modules.config import load_config_file, save_config_file
 from modules.config.schemas_v1 import ProfileMetadata, ProfileMetadataROM
 from modules.roms import ROM, ROMS_DIRECTORY, list_available_roms, load_rom_data
@@ -80,7 +79,7 @@ def load_profile(path: Path) -> Profile:
                 return Profile(rom, path, last_played)
 
     print(
-        f"[bold red]Could not find ROM `{metadata.rom.file_name}` for profile `{path.name}`, "
+        f"Could not find ROM `{metadata.rom.file_name}` for profile `{path.name}`, "
         f"please place `{metadata.rom.file_name}` into `{ROMS_DIRECTORY}`!"
     )
     sys.exit(1)
@@ -92,7 +91,7 @@ def profile_directory_exists(name: str) -> bool:
 
 def create_profile(name: str, rom: ROM) -> Profile:
     if name.startswith("_"):
-        raise exceptions.PrettyValueError('Profile names cannot start with the underscore "_" character.')
+        raise TypeError('Profile names cannot start with the underscore "_" character.')
     profile_directory = PROFILES_DIRECTORY / name
     if profile_directory.exists():
         raise RuntimeError(f'There already is a profile called "{name}", cannot create a new one with that name.')

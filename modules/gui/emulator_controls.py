@@ -136,7 +136,7 @@ class EmulatorControls:
 
         def select_bot_mode(mode: str):
             if mode == "Manual":
-                context.set_manual_mode(enable_video_and_slow_down=False)
+                context.set_manual_mode()
             else:
                 context.bot_mode = mode
             if self.bot_mode_menu:

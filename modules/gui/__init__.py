@@ -174,7 +174,7 @@ class PokebotGui:
                         self._emulator_screen.scale = max(1, self._emulator_screen.scale - 1)
                     case "toggle_manual":
                         context.toggle_manual_mode()
-                        print(f"Now in [cyan]{context.bot_mode}[/] mode")
+                        print(f"Now in {context.bot_mode} mode")
                         context.emulator.set_inputs(0)
                     case "reload_config":
                         context.reload_config()

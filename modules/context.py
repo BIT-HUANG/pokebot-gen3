@@ -66,14 +66,14 @@ class BotContext:
             new_config = Config()
             new_config.load(self.config.config_dir, strict=False)
             self.config = new_config
-            print("[cyan]Profile settings loaded.[/]")
+            print("Profile settings loaded.")
         except Exception as error:
             if self.debug:
                 raise error
             print(
-                "[bold red]The configuration could not be loaded, no changes have been made.[/]\n"
+                "The configuration could not be loaded, no changes have been made.\n"
                 "[bold yellow]This is probably due to a malformed file."
-                "For more information run the bot with the --debug flag.[/]"
+                "For more information run the bot with the --debug flag."
             )
         return
 
@@ -117,29 +117,16 @@ class BotContext:
             self._previous_bot_mode = "Manual"
         else:
             self._previous_bot_mode = self._current_bot_mode
-            self.set_manual_mode(enable_video_and_slow_down=False)
+            self.set_manual_mode()
         self._update_gui()
 
-    def set_manual_mode(self, enable_video_and_slow_down: bool = True) -> None:
+    def set_manual_mode(self) -> None:
         if self.bot_mode == "Manual":
             return
-
         self.bot_mode = "Manual"
         self.emulator.reset_held_buttons()
-        if enable_video_and_slow_down:
-            from modules.gui.desktop_notification import desktop_notification
 
-            self.emulation_speed = 1
-            self.video = True
-            desktop_notification(title="Manual Mode", message="The bot has switched to manual mode.")
 
-    def debug_stepping_mode(self) -> None:
-        if self.debug and self.gui and self.gui._emulator_screen:
-            from modules.gui.desktop_notification import desktop_notification
-
-            self.gui._emulator_screen.toggle_stepping_mode()
-            self.video = True
-            desktop_notification(title="Manual Mode", message="The bot has switched to stepping mode.")
 
     @property
     def audio(self) -> bool:

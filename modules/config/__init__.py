@@ -5,7 +5,6 @@ from pathlib import Path
 from confz import BaseConfig, FileSource
 from ruamel.yaml import YAML
 
-from modules import exceptions
 from modules.config.schemas_v1 import  Cheats, Keys, Logging, ProfileMetadata
 from modules.runtime import get_base_path
 
@@ -76,7 +75,7 @@ class Config:
 
         config_inst = getattr(self, attr, None)
         if not isinstance(config_inst, BaseConfig):
-            raise exceptions.PrettyValueError(f"Config.{attr} is not a valid configuration to load.")
+            raise TypeError(f"Config.{attr} is not a valid configuration to load.")
         file_path = self.config_dir / config_inst.filename
         if config_inst := load_config_file(file_path, config_inst.__class__, strict=strict):
             setattr(self, attr, config_inst)
@@ -90,7 +89,7 @@ class Config:
 
         config_inst = getattr(self, attr, None)
         if not isinstance(config_inst, BaseConfig):
-            raise exceptions.PrettyValueError(f"Config.{attr} is not a valid configuration to save.")
+            raise TypeError(f"Config.{attr} is not a valid configuration to save.")
         save_config_file(self.config_dir, config_inst, strict=strict)
 
 
@@ -103,7 +102,7 @@ def load_config_file(file_path: Path, config_cls: type[BaseConfig], strict: bool
     """
     if not file_path.is_file():
         if strict:
-            raise exceptions.CriticalFileMissing(file_path)
+            raise FileNotFoundError(f"Critical file missing: {file_path}")
         return None
     else:
         sources = [FileSource(file_path)]
@@ -119,13 +118,13 @@ def save_config_file(config_dir: Path, config_inst: BaseConfig, strict: bool = F
     """
     if not config_dir.is_dir():
         if strict:
-            raise exceptions.CriticalDirectoryMissing(config_dir)
+            raise NotADirectoryError(f"Critical config missing: {config_dir}")
         config_dir.mkdir()
     if not isinstance(config_inst, BaseConfig):
-        raise exceptions.PrettyValueError("The provided config is not a valid config instance.")
+        raise TypeError("The provided config is not a valid config instance.")
     config_file = config_dir / config_inst.filename
     if strict and config_file.is_file():
-        raise exceptions.PrettyValueError(f"The file {config_file} already exists. Refusing to overwrite it.")
+        raise FileExistsError(f"The file {config_file} already exists. Refusing to overwrite it.")
     yaml = YAML()
     yaml.allow_unicode = False
     yaml.dump(config_inst.model_dump(), config_dir / config_inst.filename)

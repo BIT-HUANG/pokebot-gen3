@@ -55,9 +55,7 @@ def directory_arg(value: str) -> pathlib.Path:
     """
     path_obj = pathlib.Path(value)
     if not path_obj.is_dir() or not path_obj.exists():
-        from modules import exceptions
-
-        raise exceptions.CriticalDirectoryMissing(value)
+        raise NotADirectoryError(f"Critical directory missing: {value}")
     return path_obj
 
 
