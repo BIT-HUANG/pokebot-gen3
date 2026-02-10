@@ -8,10 +8,6 @@
 # encounters, the database would have a size of about 190 MB.
 log_encounters: false
 
-# Show a desktop notification if a shiny, roamer, or Pokémon matching your
-# Custom Catch Filters is encountered, or the bot is switched to manual
-# mode.
-desktop_notifications: true
 
 # Log information about wild encounters (or gift Pokémon) to the console.
 log_encounters_to_console: true
@@ -27,14 +23,4 @@ save_pk3:
   # Entei/Raikou/Suicine on FR/LG) the first time it is encountered.
   roamer: true
 
-# Save short GIF clips of the start of a battle whenever a Shiny is
-# encountered. These are saved in `screenshots/gifs/` in the profile
-# directory.
-# If you're using the Discord integration, these GIFs will then also
-# be added to Shiny notifications.
-shiny_gifs: true
 
-# Generate TCG card-style images whenever a Shiny is encountered,
-# containing information (stats, moves) about that Pokémon.
-# These are saved in `screenshots/cards/` in the profile directory.
-tcg_cards: true

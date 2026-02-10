@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Literal
 
 from confz import BaseConfig
-from pydantic import ConfigDict, Field
-from pydantic.types import Annotated, ClassVar, NonNegativeInt, PositiveInt
+from pydantic import Field
+from pydantic.types import ClassVar, NonNegativeInt, PositiveInt
 
 
 
