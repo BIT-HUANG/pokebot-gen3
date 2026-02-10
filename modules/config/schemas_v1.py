@@ -10,14 +10,6 @@ from pydantic.types import ClassVar, NonNegativeInt, PositiveInt
 
 
 
-class Cheats(BaseConfig):
-    """Schema for the cheat configuration."""
-
-    filename: ClassVar = "cheats.yml"
-    random_soft_reset_rng: bool = False
-    faster_pickup: bool = False
-
-
 
 class Keys(BaseConfig):
     """Schema for GBA key configuration."""

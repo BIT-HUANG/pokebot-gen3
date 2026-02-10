@@ -5,12 +5,11 @@ from pathlib import Path
 from confz import BaseConfig, FileSource
 from ruamel.yaml import YAML
 
-from modules.config.schemas_v1 import  Cheats, Keys, ProfileMetadata
+from modules.config.schemas_v1 import  Keys, ProfileMetadata
 from modules.runtime import get_base_path
 
 # Defines which class attributes of the Config class are meant to hold required configuration data.
 CONFIG_ATTRS = {
-    "cheats",
     "keys"
 }
 
@@ -27,7 +26,6 @@ class Config:
         """
 
         self.config_dir = Path(config_dir) if config_dir else get_base_path() / "profiles"
-        self.cheats: Cheats = Cheats()
         self.is_profile = is_profile
         self.keys: Keys = Keys()
         self.loaded = False
