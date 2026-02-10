@@ -74,7 +74,6 @@ class Logging(BaseConfig):
     create_save_state_for_shiny: bool = True
     log_encounters: bool = False
     log_encounters_to_console: bool = True
-    desktop_notifications: bool = True
     shiny_gifs: bool = True
     tcg_cards: bool = True
 
