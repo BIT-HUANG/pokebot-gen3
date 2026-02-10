@@ -7,7 +7,7 @@ import pathlib
 import platform
 from dataclasses import dataclass
 
-from modules.runtime import is_bundled_app, get_base_path
+from modules.runtime import is_bundled_app
 
 
 OS_NAME = platform.system()
@@ -126,9 +126,6 @@ if __name__ == "__main__":
 
     startup_settings = parse_arguments()
     print("Starting BD4SLW mGBA!")
-
-    # if not is_bundled_app() and not (get_base_path() / ".git").is_dir():
-    #     run_updater()
 
     from modules.gui import PokebotGui
 
