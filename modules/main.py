@@ -32,24 +32,6 @@ def main_loop() -> None:
     This function is run after the user has selected a profile and the emulator has been started.
     """
     try:
-        if context.rom.game_name.startswith("Unsupported "):
-            print("\nYou are running an unsupported game!")
-            print(
-                "\nThis ROM does not appear to be an exact copy of an original Gen3 game.\nIt's possible that is has been modified, or that it got corrupted while dumping the cartridge.\nWhile this might still work, chances are that some or all bot functions will not."
-            )
-            print("\nPlease do not ask for support if there are any problem with this game.\n")
-
-        # Built-in plugins are only loaded if some bot configuration actually requires them.
-        # Since profile configuration can override global configuration, they can only be
-        # loaded at this point where the profile has been loaded and so the full config is
-        # available.
-        #
-        # Regular (user-provided) plugins need to be loaded in `pokebot.py` as early as possible
-        # because they might add bot modes.
-
-
-
-
         while True:
             # Process work queue, which can be used to get the main thread to access the emulator
             # at a 'safe' time (i.e. not in the middle of emulating a frame.)
@@ -59,11 +41,6 @@ def main_loop() -> None:
                 work_queue.task_done()
 
             context.frame += 1
-
-
-
-
-
 
             if context.bot_mode == "Manual":
                 if not isinstance(context.bot_mode_instance, ManualBotMode):
@@ -93,6 +70,6 @@ def main_loop() -> None:
 
     except SystemExit:
         raise
-    except Exception:
-        console.print_exception(show_locals=True)
+    except Exception as e:
+        print(e)
         sys.exit(1)
