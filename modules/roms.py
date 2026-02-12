@@ -112,7 +112,7 @@ def _load_gb_rom(file: Path, handle: BinaryIO) -> ROM:
     revision = 0
     language = ROMLanguage.English  # GB ROM默认设为英文（可按需调整）
 
-    return ROM(file, game_name, game_title, "GBCR", language, maker_code, revision)
+    return ROM(file, game_name, game_title, "GBCR", language, revision)
 
 
 def load_rom_data(file: Path) -> ROM:
@@ -120,10 +120,6 @@ def load_rom_data(file: Path) -> ROM:
     global rom_cache
     if str(file) in rom_cache:
         return rom_cache[str(file)]
-
-    # 移除文件大小校验（可选：若保留，仅作为基础过滤，值调小）
-    # if file.stat().st_size < 0xC0:
-    #     raise InvalidROMError("This does not seem to be a valid ROM (file size too small.)")
 
     with open(file, "rb") as handle:
         # 简化GBA/GB魔术数判断（可选：完全移除则所有文件都尝试加载）
@@ -138,9 +134,5 @@ def load_rom_data(file: Path) -> ROM:
         if gb_magic_string == b"\xce\xed\x66\x66":
             rom_cache[str(file)] = _load_gb_rom(file, handle)
             return rom_cache[str(file)]
-
-        # 若完全移除魔术数校验：直接尝试加载为GBA ROM（兜底）
-        # rom_cache[str(file)] = _load_gba_rom(file, handle)
-        # return rom_cache[str(file)]
 
     raise InvalidROMError(f"File `{file.name}` does not seem to be a valid ROM (magic number missing.)")
