@@ -6,17 +6,12 @@ from showinfm import show_in_file_manager
 from modules.context import context
 
 
-
-
 class EmulatorControls:
     def __init__(self, window: Tk):
         self.window = window
-        self.last_known_bot_mode = context.bot_mode
 
         self.frame: Union[ttk.Frame, None] = None
         self.menu_bar: Union[Menu, None] = None
-        self.bot_mode_button: ttk.Button
-        self.bot_mode_menu: tkinter.Menu | None
         self.speed_1x_button: ttk.Button
         self.speed_menu_button: ttk.Button | None
         self.unthrottled_button: ttk.Button
@@ -80,8 +75,6 @@ class EmulatorControls:
         self.frame.grid(row=1, sticky="NSWE")
         self.frame.columnconfigure(1, weight=1)
         self.frame.rowconfigure(1, weight=1)
-
-        self._add_bot_mode_controls(row=0, column=0)
         self._add_speed_controls(row=0, column=1, sticky="N")
         self._add_settings_controls(row=0, column=2)
 
@@ -100,9 +93,6 @@ class EmulatorControls:
         if self.frame is None:
             return
 
-        self.bot_mode_button.config(text=f"{context.bot_mode} ▾")
-        self._set_button_colour(self.bot_mode_button, active_condition=context.bot_mode == "Manual")
-
         if context.emulation_speed > 1:
             speed_text = f"{context.emulation_speed}× ▾"
         else:
@@ -120,41 +110,10 @@ class EmulatorControls:
 
         self.bot_message.config(text=context.message)
 
-    def on_frame_render(self):
-        if context.bot_mode != self.last_known_bot_mode:
-            self.last_known_bot_mode = context.bot_mode
-            self.update()
 
     def on_video_output_click(self, click_location: tuple[int, int], scale: int):
         pass
 
-    def _add_bot_mode_controls(self, row: int, column: int):
-        group = ttk.Frame(self.frame)
-        group.grid(row=row, column=column, sticky="W")
-
-        def select_bot_mode(mode: str):
-            if mode == "Manual":
-                context.set_manual_mode()
-            else:
-                context.bot_mode = mode
-            if self.bot_mode_menu:
-                self.bot_mode_menu.destroy()
-                self.bot_mode_menu = None
-
-        def open_bot_mode_menu():
-            bold_font = tkinter.font.Font(self.window, weight="bold", size=10)
-
-            self.bot_mode_menu = tkinter.Menu(self.window, tearoff=0)
-            if context.bot_mode == "Manual":
-                self.bot_mode_menu.add_command(label="Manual", font=bold_font)
-            else:
-                self.bot_mode_menu.add_command(label="Manual", command=lambda: select_bot_mode("Manual"))
-
-        ttk.Label(group, text="Bot Mode:", justify="left").grid(row=0, sticky="W")
-        self.bot_mode_button = ttk.Button(
-            group, text=f"{context.bot_mode} ▾", width=20, padding=(0, 3), cursor="hand2", command=open_bot_mode_menu
-        )
-        self.bot_mode_button.grid(row=1, sticky="W", padx=0)
 
     def _add_speed_controls(self, row: int, column: int, sticky: str = "W"):
         def set_emulation_speed(speed: int) -> None:

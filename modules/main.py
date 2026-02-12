@@ -1,9 +1,8 @@
 import queue
 import sys
 from collections import deque
-from typing import Generator
 from modules.context import context
-from modules.modes import BotMode
+
 
 
 # Contains a queue of tasks that should be run the next time a frame completes.
@@ -16,15 +15,6 @@ work_queue: queue.Queue[callable] = queue.Queue()
 # Keeps a list of inputs that have been pressed for each frame so that the HTTP server
 # can fetch and accumulate them for its `Inputs` stream event.
 inputs_each_frame: deque[int] = deque(maxlen=128)
-
-
-class ManualBotMode(BotMode):
-    @staticmethod
-    def name() -> str:
-        return "Manual"
-
-    def run(self) -> Generator:
-        yield
 
 
 def main_loop() -> None:
@@ -42,15 +32,7 @@ def main_loop() -> None:
 
             context.frame += 1
 
-            if context.bot_mode == "Manual":
-                if not isinstance(context.bot_mode_instance, ManualBotMode):
-                    context.emulator.reset_held_buttons()
-                context.bot_mode_instance = ManualBotMode()
-
-
             try:
-                if context.bot_mode == "Manual":
-                    context.controller_stack = []
                 if len(context.controller_stack) > 0:
                     next(context.controller_stack[-1])
             except (StopIteration, GeneratorExit):

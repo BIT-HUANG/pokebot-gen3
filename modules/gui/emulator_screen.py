@@ -227,9 +227,6 @@ class EmulatorScreen:
         self._update_window()
 
     def _update_window(self):
-        if self.scale > 1:
-            self._controls.on_frame_render()
-
         self.window.update_idletasks()
         self.window.update()
 

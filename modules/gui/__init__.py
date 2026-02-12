@@ -154,7 +154,7 @@ class PokebotGui:
 
         # These key bindings will only be applied if the emulation has started.
         if context.emulator:
-            if keysym_with_modifier in self._gba_keys and context.bot_mode == "Manual":
+            if keysym_with_modifier in self._gba_keys:
                 context.emulator.hold_button(inputs=self._gba_keys[keysym_with_modifier])
             elif keysym_with_modifier in self._emulator_keys:
                 match self._emulator_keys[keysym_with_modifier]:
@@ -170,10 +170,6 @@ class PokebotGui:
                         self._emulator_screen.scale = min(5, self._emulator_screen.scale + 1)
                     case "zoom_out":
                         self._emulator_screen.scale = max(1, self._emulator_screen.scale - 1)
-                    case "toggle_manual":
-                        context.toggle_manual_mode()
-                        print(f"Now in {context.bot_mode} mode")
-                        context.emulator.set_inputs(0)
                     case "reload_config":
                         context.reload_config()
                         self._apply_key_config()
@@ -209,5 +205,5 @@ class PokebotGui:
             return
 
         keysym_with_modifier = ("ctrl+" if event.state & 4 else "") + event.keysym.lower()
-        if context.emulator and (keysym_with_modifier in self._gba_keys and (context.bot_mode == "Manual")):
+        if context.emulator and (keysym_with_modifier in self._gba_keys):
             context.emulator.release_button(inputs=self._gba_keys[keysym_with_modifier])

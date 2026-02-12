@@ -8,7 +8,6 @@ from modules.runtime import get_base_path
 if TYPE_CHECKING:
     from modules.gui import PokebotGui
     from modules.libmgba import LibmgbaEmulator
-    from modules.modes import BotMode
     from modules.profiles import Profile
     from modules.roms import ROM
 
@@ -37,7 +36,7 @@ def _initialise_config() -> None:
 
 
 class BotContext:
-    def __init__(self, initial_bot_mode: str = "Manual"):
+    def __init__(self):
         _initialise_config()
         self.config = Config()
 
@@ -52,10 +51,7 @@ class BotContext:
 
         self.controller_stack: list[Generator] = []
         self.debug_action_stack: list[str] = []
-        self.bot_mode_instance: Optional["BotMode"] = None
         self.frame: int = 0
-        self._current_bot_mode: str = initial_bot_mode
-        self._previous_bot_mode: str = "Manual"
 
     def reload_config(self) -> None:
         """
@@ -99,34 +95,6 @@ class BotContext:
                 self.emulator.set_throttle(True)
                 self.emulator.set_speed_factor(new_speed)
             self._update_gui()
-
-    @property
-    def bot_mode(self) -> str:
-        return self._current_bot_mode
-
-    @bot_mode.setter
-    def bot_mode(self, new_bot_mode: str) -> None:
-        if self._current_bot_mode != new_bot_mode:
-            self._previous_bot_mode = self._current_bot_mode
-            self._current_bot_mode = new_bot_mode
-            self._update_gui()
-
-    def toggle_manual_mode(self) -> None:
-        if self._current_bot_mode == "Manual":
-            self._current_bot_mode = self._previous_bot_mode
-            self._previous_bot_mode = "Manual"
-        else:
-            self._previous_bot_mode = self._current_bot_mode
-            self.set_manual_mode()
-        self._update_gui()
-
-    def set_manual_mode(self) -> None:
-        if self.bot_mode == "Manual":
-            return
-        self.bot_mode = "Manual"
-        self.emulator.reset_held_buttons()
-
-
 
     @property
     def audio(self) -> bool:
