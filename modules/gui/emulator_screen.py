@@ -8,7 +8,7 @@ import PIL.Image
 import PIL.ImageTk
 
 try:
-    from modules.gui.glfw import GlfwGui
+    from modules.gui.emulator_glfw import GlfwGui
     import threading
 
     can_use_opengl = True
