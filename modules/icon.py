@@ -7,7 +7,6 @@ def get_icon() -> Path:
     return Path.cwd() / "DQA.png"
 
 
-
 def crop_icon_square(path: Path) -> PIL.Image:
     """
     Crops a sprite to the smallest possible size while keeping the image square.

@@ -6,7 +6,6 @@ from OpenGL.GL import *
 
 from mgba import ffi
 from modules.context import context
-from modules.game import set_rom
 from modules.libmgba import LibmgbaEmulator
 
 if TYPE_CHECKING:
@@ -33,7 +32,6 @@ class GlfwGui:
 
         context.profile = startup_settings.profile
         context.config.load(startup_settings.profile.path, strict=False)
-        set_rom(startup_settings.profile.rom)
         context.emulator = LibmgbaEmulator(startup_settings.profile, self._on_frame)
         context.audio = not startup_settings.no_audio
         context.video = not startup_settings.no_video

@@ -10,7 +10,6 @@ import darkdetect
 from ttkthemes import ThemedTk
 
 from modules.context import context
-from modules.game import set_rom
 from modules.gui.create_profile_screen import CreateProfileScreen
 from modules.gui.emulator_screen import EmulatorScreen
 from modules.gui.load_state_window import LoadStateWindow
@@ -129,7 +128,6 @@ class PokebotGui:
         self._reset_screen()
         context.profile = profile
         context.config.load(profile.path, strict=False)
-        set_rom(profile.rom)
         context.emulator = LibmgbaEmulator(profile, self._emulator_screen.update)
 
         if self._startup_settings:
