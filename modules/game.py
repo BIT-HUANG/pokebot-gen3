@@ -2,7 +2,6 @@ import yaml
 from typing import Literal
 
 from modules.roms import ROM, ROMLanguage
-from modules.runtime import get_data_path
 
 _symbols: dict[str, tuple[int, int]] = {}
 _reverse_symbols: dict[int, tuple[str, str, int]] = {}
