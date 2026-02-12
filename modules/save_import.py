@@ -1,9 +1,9 @@
 import binascii
 import os
 import zlib
+import struct
 from typing import IO
 
-from modules.memory import unpack_uint32
 from modules.profiles import Profile, create_profile
 from modules.roms import ROM, list_available_roms
 
@@ -145,3 +145,6 @@ def get_state_data_from_png(file: IO) -> tuple[bytes, bytes | None]:
         raise MigrationError("Could not find save state data in this file.")
 
     return state_data, savegame_data
+
+def unpack_uint32(value: bytes) -> int:
+    return struct.unpack("<I", value)[0]
