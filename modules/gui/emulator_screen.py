@@ -1,6 +1,6 @@
 from collections import deque
 from tkinter import Button, PhotoImage, Tk
-from typing import TYPE_CHECKING, Union, Optional
+from typing import  Union
 from tkinter import ttk, Canvas
 import time
 import contextlib
