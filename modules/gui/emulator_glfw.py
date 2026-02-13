@@ -45,7 +45,7 @@ class GlfwGui:
         if not glfw.init():
             return
 
-        window = glfw.create_window(WIDTH * self._scale, HEIGHT * self._scale, "Pokebot OpenGL", None, None)
+        window = glfw.create_window(WIDTH * self._scale, HEIGHT * self._scale, "DQA mGBA OpenGL", None, None)
         if not window:
             glfw.terminate()
             return
@@ -77,9 +77,6 @@ class GlfwGui:
                     context.emulator.hold_button("Start")
                 elif key == glfw.KEY_BACKSPACE:
                     context.emulator.hold_button("Select")
-                # elif key == glfw.KEY_TAB:
-                #     context.toggle_manual_mode()
-                #     context.emulator.set_inputs(0)
                 elif key == glfw.KEY_EQUAL and modifiers == glfw.MOD_SHIFT:
                     self._scale = min(5, self._scale + 1)
                     glfw.set_window_size(window, WIDTH * self._scale, HEIGHT * self._scale)
