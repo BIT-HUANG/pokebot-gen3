@@ -18,7 +18,6 @@ required_modules = [
     "Pillow~=10.4.0",
     "sounddevice~=0.4.6",
     "plyer~=2.1.0",
-    "show-in-file-manager~=1.1.4",
 ]
 
 if platform.system() == "Windows":

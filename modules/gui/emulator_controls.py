@@ -2,7 +2,6 @@ import tkinter.font
 from tkinter import Menu, Tk, ttk
 from typing import Union
 
-from showinfm import show_in_file_manager
 from modules.context import context
 
 
@@ -47,10 +46,10 @@ class EmulatorControls:
         self.emulator_menu.add_separator()
         self.emulator_menu.add_command(label="Reset", command=context.emulator.reset)
 
-        self.profile_menu = Menu(self.window, tearoff=0)
-        self.profile_menu.add_command(
-            label="Open Profile Folder", command=lambda: show_in_file_manager(str(context.profile.path))
-        )
+        # self.profile_menu = Menu(self.window, tearoff=0)
+        # self.profile_menu.add_command(
+        #     label="Open Profile Folder", command=lambda: show_in_file_manager(str(context.profile.path))
+        # )
 
         # self.help_menu = Menu(self.window, tearoff=0)
         # self.help_menu.add_command(
